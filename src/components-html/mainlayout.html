@@ -1,0 +1,13 @@
+<mat-sidenav-container>
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    [(opened)]="opened"
+  >
+    Sidenav content
+  </mat-sidenav>
+  <div style="max-height: 10vh">
+    <navbar (Navtoggle)="sidenav.toggle()"></navbar>
+  </div>
+  <div style="max-height: 80vh"><div style="height: 80vh"><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></div></div>
+</mat-sidenav-container>

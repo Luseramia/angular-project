@@ -1,0 +1,42 @@
+<div class="w-screen h-screen flex items-center justify-center">
+  <div class="flex flex-col h-2/4 w-2/4 justify-center items-center">
+    <mat-form-field appearance="fill" class="w-1/2" id="username" required>
+      <mat-label>ผู้ใช้งาน</mat-label>
+      <input type="email" matInput [formControl]="usernameControl" [errorStateMatcher]="matcher"  />
+      <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
+      @if (usernameControl.hasError('required')) {
+        <mat-error>โปรดใส่ชื่อผู้ใช้งาน <strong>required</strong></mat-error>
+      }
+    
+    </mat-form-field>
+    <div class="h-4"></div>
+    <mat-form-field appearance="fill" class="w-1/2" id="password" required>
+      <mat-label>รหัสผ่าน</mat-label>
+      <input matInput [formControl]="passwordControl" [type]="hide() ? 'password' : 'text'" [errorStateMatcher]="matcher"/>
+      @if (usernameControl.hasError('required')) {
+        <mat-error>โปรดใส่รหัสผ่าน <strong>required</strong></mat-error>
+      }
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="clickEvent($event)"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide()"
+      >
+        <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+    <div class="h-4"></div>
+    <a
+      mat-flat-button
+      class="w-1/4"
+      (click)="Login()"
+      >เข้าสู่ระบบ</a
+    >
+    <div class="flex w-full justify-end">
+      <a>ลืมรหัสผ่าน ?</a>
+    </div>
+    
+  </div>
+</div>
+
