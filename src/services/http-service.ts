@@ -1,21 +1,49 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class HttpService {
+export class HttpService {  
   constructor(private http: HttpClient) {}
-  async PostData(endpoint:string ,data:Object)  {    
+  async PostData<T>(endpoint: string, data: Object): Promise<HttpResponse<T> | { status: number; message: string; error: any }> {
+
     try {
-        const response = await lastValueFrom(
-          this.http.post(`http://localhost:5192${endpoint}`, data, { withCredentials: true ,observe: 'response'})
-        );
-        return response;
-      } catch (error) {
-        console.error('Error in PostData:', error);
-        throw error;
+      const response = await lastValueFrom(
+        this.http.post<T>(`http://localhost:5192${endpoint}`, data, {
+          withCredentials: true,
+          observe: 'response',
+          responseType: 'json', 
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+  
+      return response; 
+    } catch (error: any) {
+      // Handle error หาก response เป็น JSON แต่ responseType เป็น Blob
+      if (
+        error.error instanceof Blob &&
+        error.error.type === 'application/problem+json'
+      ) {
+        const errorText = await error.error.text();
+        const parsedError = JSON.parse(errorText);
+        return {
+          status: error.status,
+          message: parsedError.message || error.message,
+          error: parsedError,
+        };
+      } else {
+        return {
+          status: error.status,
+          message: error.message,
+          error: error.error,
+        };
       }
+    }
   }
 }

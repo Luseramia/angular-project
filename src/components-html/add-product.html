@@ -1,0 +1,48 @@
+<div class="p-10">
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <mat-grid-list cols="2" rowHeight="5:1">
+        <mat-grid-tile>
+          <mat-form-field class="w-4/6">
+            <mat-label>ชื่อสินค้า</mat-label>
+            <input matInput [formControl]="productName" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field class="w-4/6">
+            <mat-label>รายละเอียด</mat-label>
+            <input matInput [formControl]="productDescription" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field class="w-4/6">
+            <mat-label>ราคา</mat-label>
+            <input matInput [formControl]="productPrice" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile >
+          <button mat-raised-button (click)="fileInput.click()">
+            เพิ่มรูปภาพ
+          </button>
+          @if(file){
+          <p>{{file.name}}</p>
+          <img class="h-12" [src]="objectUrl" />
+
+          }
+          <input
+            #fileInput
+            style="display: none"
+            type="file"
+            (change)="onFileSelected($event)"
+            accept="image/*"
+          />
+        </mat-grid-tile>
+        <mat-grid-tile
+          ><button mat-flat-button (click)="sendData()">
+            บันทึก
+          </button></mat-grid-tile
+        >
+      </mat-grid-list>
+    </mat-card-content>
+  </mat-card>
+</div>

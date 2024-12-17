@@ -1,0 +1,18 @@
+<mat-grid-list cols="3" rowHeight="2:1">
+  @for (item of items; track item.productId) {
+    <mat-grid-tile>
+      <mat-card
+        appearance="outlined"
+        class="w-full h-full flex flex-col justify-center items-center"
+      >
+        <mat-card-content>
+          <p>{{item.productName}}</p>
+          <img  [src]="item.productImage" class="w-10 h-10" />
+          <button mat-raised-button (click)="getProduct(item.productId,item)">รายละเอียด</button>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+   } @empty {
+  <li>There are no items.</li>
+  }
+</mat-grid-list>

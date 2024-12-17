@@ -21,7 +21,7 @@ import {
   Router,
 } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
-
+import { Loading } from './loading';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -49,6 +49,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
+    Loading
   ],
 
   templateUrl: '../components-html/login.html',
@@ -57,6 +58,7 @@ export class Login {
   @Output() loginSuccess = new EventEmitter<void>();
   
   hide = signal(true);
+  loading = false;
   usernameControl = new FormControl('', [Validators.required]);
   passwordControl = new FormControl('', [Validators.required]);
   matcher = new MyErrorStateMatcher();
@@ -72,11 +74,15 @@ export class Login {
       password: this.passwordControl.value!,
     };
     // this.router.navigate(['/test']);
-    const result = await this.httpService.PostData('/post1', dataToSend);
+    const result = await this.httpService.PostData('/login', dataToSend);
+    
     if (result.status == 200) {
       this.loginSuccess.emit();
     }
   }
+
+
+  
 }
 
 interface DataToSend {

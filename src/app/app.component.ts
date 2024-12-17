@@ -4,11 +4,10 @@ import {
   OnChanges,
   SimpleChanges,
   OnInit,
-  ApplicationRef
+  inject,
 } from '@angular/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef } from '@angular/core';
 import {
   RouterOutlet,
   RouterLink,
@@ -20,7 +19,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Login } from '../components/login';
 import { log } from 'console';
 import { MainLayout } from '../components/MainLayout';
-
+import { CookieService } from 'ngx-cookie-service';
+import { jwtDecode } from 'jwt-decode';
+import { HttpService } from '../services/http-service';
+import { Loading } from '../components/loading';
 
 @Component({
   selector: 'app-root',
@@ -32,41 +34,63 @@ import { MainLayout } from '../components/MainLayout';
     RouterLink,
     RouterLinkActive,
     CommonModule,
-    MainLayout
+    MainLayout,
+    Loading,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 @Injectable({ providedIn: 'root' })
-export class AppComponent implements OnInit,OnChanges {
-  constructor(private cdr: ChangeDetectorRef, private router: Router,private appRef: ApplicationRef) {}
-  login = false;
+export class AppComponent implements OnInit {
+  constructor(private cookieService: CookieService) {}
+  login = true;
   title = 'angular-project';
   test = false;
   abc = 'abc';
   initialCount = 18;
+  loading = true;
   id: string = '';
   firstName: string = 'asdfasdf';
-  async setLogin(): Promise<void>  {
-    this.login = !this.login;
-    console.log("Setlogin");
-    this.cdr.detectChanges();
-    console.log(this.login)
-  }
-  
-  ngOnInit(): void {
-    console.log('เด้งไปหน้าล็อคอิน')
-    if (!this.login) {
-      this.router.navigate(['']);
-    }
-    else{
-      this.router.navigate(['/test']);
-    }
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('Input properties changed:', changes);
+  firstLoad : Boolean = true;
+  private httpService = inject(HttpService);
 
+  async setLogin(): Promise<void> {
+    this.login = !this.login;
+    console.log('Setlogin');
+    console.log(this.login);
+    const token = this.cookieService.get('jwtToken');
+    if (!token) {
+      console.log('ไม่มีtoken'); // ไม่มี Token แสดงว่าไม่ได้ล็อกอิน
+    }
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      console.log(decodedToken);
+      const isExpired = decodedToken.exp * 1000 < Date.now(); // ตรวจสอบวันหมดอายุ
+      console.log(isExpired);
+    } catch (error) {
+      console.error('Invalid token', error);
+    }
   }
+
+  ngOnInit(): void {
+    // this.CheckLogin();
+  }
+
+
+  async CheckLogin(): Promise<void> {
+    try {
+      const result = await this.httpService.PostData('/checkLogin', {});
+      console.log(result.status === 200);
+      this.login = result.status === 200;
+    } catch (error) {
+      console.error('Error during login check:', error);
+      this.login = false;
+    } finally {
+      this.loading = false; // โหลดเสร็จ ไม่ว่าจะสำเร็จหรือไม่
+    }
+  }
+
   // getData(): void{
   //   this.http.get('http://localhost:5192/test1',{ withCredentials: true }).subscribe(res=>{
 
