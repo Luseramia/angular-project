@@ -28,9 +28,8 @@ export class Homepage implements OnInit {
   private httpService = inject(HttpService);
   public items: Product[] = [];
   async getProduct(id: string,product:Product) {
-    console.log(id,product)
     this.router.navigate(['/product', id], {
-      state: { product: "test" },
+      state: { product:product },
     });
   }
   ngOnInit(): void {

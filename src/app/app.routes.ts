@@ -8,6 +8,6 @@ import { AddProduct } from '../components/add-product';
 export const routes: Routes = [
   { path: '', component: Homepage },
   { path: 'login', component: Login },
-  { path: 'product/:id', component: Product },
+  { path: 'product/:id', component: Product,runGuardsAndResolvers: 'paramsChange',  },
   {path: 'add-product' , component: AddProduct}
 ];

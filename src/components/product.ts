@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpService } from '../services/http-service';
-import { blob } from 'node:stream/consumers';
 import { CommonModule } from '@angular/common';
-
+import { Subscription } from 'rxjs';
+import { HttpService } from '../services/http-service';
+import { HttpResponse } from '@angular/common/http';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Component({
   selector: 'product',
   standalone: true,
@@ -11,21 +12,33 @@ import { CommonModule } from '@angular/common';
   templateUrl: '../components-html/product.html',
 })
 export class Product implements OnInit {
-  constructor(private router: Router) {}
-
+  constructor (private sanitizer: DomSanitizer){}
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private paramSub!: Subscription; // ใช้เก็บ subscription
   private httpService = inject(HttpService);
-  public objectUrl!: string;
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id'); // ดึงค่า id จาก URL
-    console.log('ID from URL:', id);
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      const product = navigation.extras.state['product'];
-      console.log('Product from state:', product);
+  public product_id!: string | null;
+  public productDescription!: string | null;
+  public image!:string | null;
+ async ngOnInit(): Promise<void> {
+    this.paramSub = this.route.paramMap.subscribe((params) => {
+      this.product_id = params.get('id');
+      console.log('ID from URL:', this.product_id);
+    });
+    const result = await this.httpService.PostData<{ imgId?: string }>('/findProduct', { productId: this.product_id });
+    if (result instanceof HttpResponse) {
+      if (result.body?.imgId) {
+        const image = await this.httpService.PostData<{ imageData?: string }>('/findImage', { imgId: result.body.imgId });
+        if (image instanceof HttpResponse) {
+          if (image.body?.imageData) {
+            this.image =this.sanitizer.bypassSecurityTrustUrl(
+            `data:image/png;base64,${image.body.imageData}`
+          ) as string
+          }
+        }
+      }
     } else {
-      console.log('No state found, fetching product by ID...');
-      // this.fetchProductById(id!); // เรียก API กรณีไม่มี state
+      console.error('API Error:', result.message);
     }
   }
 }
