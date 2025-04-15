@@ -43,7 +43,7 @@ import { Loading } from '../components/loading';
 @Injectable({ providedIn: 'root' })
 export class AppComponent implements OnInit {
   constructor(private cookieService: CookieService) {}
-  login = true;
+  login: boolean = false; 
   title = 'angular-project';
   test = false;
   abc = 'abc';
@@ -74,20 +74,24 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.CheckLogin();
+    this.CheckLogin();
   }
 
 
   async CheckLogin(): Promise<void> {
+    this.loading = true;
     try {
       const result = await this.httpService.PostData('/checkLogin', {});
-      console.log(result.status === 200);
+      console.log(result);
       this.login = result.status === 200;
     } catch (error) {
       console.error('Error during login check:', error);
       this.login = false;
     } finally {
-      this.loading = false; // โหลดเสร็จ ไม่ว่าจะสำเร็จหรือไม่
+      setTimeout(() => {
+        this.loading = false;
+      }, 10);
+// โหลดเสร็จ ไม่ว่าจะสำเร็จหรือไม่
     }
   }
 

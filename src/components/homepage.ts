@@ -10,6 +10,7 @@ import {
 } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HttpService } from '../services/http-service';
+import { retry } from 'rxjs';
 @Component({
   selector: 'homepage',
   standalone: true,
@@ -26,29 +27,40 @@ import { HttpService } from '../services/http-service';
 export class Homepage implements OnInit {
   constructor(private router: Router, private sanitizer: DomSanitizer) {}
   private httpService = inject(HttpService);
-  public items: Product[] = [];
-  async getProduct(id: string,product:Product) {
+  public products: Array<Product> = [];
+  async getProduct(id: string, product: Product) {
     this.router.navigate(['/product', id], {
-      state: { product:product },
+      state: { product: product },
     });
   }
   ngOnInit(): void {
     this.getProducts();
-  }
+    }
+
   async getProducts() {
-    const result = await this.httpService.PostData<Product[]>(
-      '/getProducts',
-      {}
-    );
+    const result = await this.httpService.PostData<Product[]>('/getProducts', {});
     if ('body' in result) {
       // กรณีเป็น HttpResponse
       if (result.body !== null) {
-        this.items = result.body.map((product) => ({
-          ...product,
-          productImage: this.sanitizer.bypassSecurityTrustUrl(
-            `data:image/png;base64,${product.productImage}`
-          ) as string,
-        }));
+        var data = result.body.map((product) => {
+          product = {
+            ...product,
+            productImage: this.sanitizer.bypassSecurityTrustUrl(
+              `data:image/png;base64,${product.productImage}`
+            ) as string,
+          };
+          return product
+        });
+        this.products = data
+        // this.products = data
+        // result.body.data.map((item)=>{
+        //   this.products =  {
+        //     ...product,
+        //     productImage: this.sanitizer.bypassSecurityTrustUrl(
+        //       `data:image/png;base64,${product.productImage}`
+        //     ) as string,
+        //   };
+        // })
       } else {
         console.error('Response body is null');
       }
@@ -58,6 +70,8 @@ export class Homepage implements OnInit {
     }
   }
 }
+
+
 
 interface Product {
   productId: string;

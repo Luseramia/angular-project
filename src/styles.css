@@ -18,3 +18,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  @layer utilities{
+    .h-50v{
+      height: 50vh;
+    }
+    .w-50v{
+      width: 50vw;
+    }
+  }

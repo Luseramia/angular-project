@@ -11,7 +11,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class HttpService {  
   constructor(private http: HttpClient) {}
-  async PostData<T>(endpoint: string, data: Object): Promise<HttpResponse<T> | { status: number; message: string; error: any }> {
+  async PostData<T>(endpoint: string, data: Object): Promise<HttpResponse<T> | { status: number; message: string; error: any ; data:Array<object> }> {
 
     try {
       const response = await lastValueFrom(
@@ -36,12 +36,14 @@ export class HttpService {
           status: error.status,
           message: parsedError.message || error.message,
           error: parsedError,
+          data: [{}],
         };
       } else {
         return {
           status: error.status,
           message: error.message,
           error: error.error,
+          data: [{}],
         };
       }
     }
