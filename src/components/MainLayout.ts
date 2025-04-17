@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Navbar } from './navbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import {
@@ -7,6 +7,7 @@ import {
   RouterLinkActive,
   Router,
 } from '@angular/router';
+import { log } from 'console';
 
 @Component({
   selector: 'mainlayout',
@@ -21,5 +22,11 @@ import {
   templateUrl: '../components-html/mainlayout.html',
 })
 export class MainLayout {
+  @Input() login!: boolean;
+  @Output() loginChange = new EventEmitter<boolean>();
   opened = false;
+  updateLogin(newValue: boolean) {
+    this.login = newValue;
+    this.loginChange.emit(newValue);
+  }
 }

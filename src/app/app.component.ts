@@ -1,8 +1,6 @@
 import {
   Component,
   Injectable,
-  OnChanges,
-  SimpleChanges,
   OnInit,
   inject,
 } from '@angular/core';
@@ -42,7 +40,7 @@ import { Loading } from '../components/loading';
 })
 @Injectable({ providedIn: 'root' })
 export class AppComponent implements OnInit {
-  constructor(private cookieService: CookieService) {}
+  constructor(private cookieService: CookieService,private router: Router) {}
   login: boolean = false; 
   title = 'angular-project';
   test = false;
@@ -56,8 +54,6 @@ export class AppComponent implements OnInit {
 
   async setLogin(): Promise<void> {
     this.login = !this.login;
-    console.log('Setlogin');
-    console.log(this.login);
     const token = this.cookieService.get('jwtToken');
     if (!token) {
       console.log('ไม่มีtoken'); // ไม่มี Token แสดงว่าไม่ได้ล็อกอิน
@@ -74,19 +70,24 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.CheckLogin();
+  //   this.CheckLogin();
+  }
+  onLoginChange(newValue: boolean) {
+    console.log('app work')
+    this.login = newValue;
   }
 
-
   async CheckLogin(): Promise<void> {
+    // console.log('test');
+    // console.log('1');
     this.loading = true;
     try {
       const result = await this.httpService.PostData('/checkLogin', {});
-      console.log(result);
-      this.login = result.status === 200;
+      // result.status === 200?console.log('loginned'):this.login
+      this.login = !(result.status === 200);
     } catch (error) {
       console.error('Error during login check:', error);
-      this.login = false;
+      // this.login = false;
     } finally {
       setTimeout(() => {
         this.loading = false;

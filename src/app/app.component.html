@@ -1,8 +1,8 @@
 <!-- <router-outlet></router-outlet> -->
  @if(!login){
-<login (loginSuccess)="setLogin()"></login>
-} @else {
-<mainlayout></mainlayout>
+   <mainlayout [login]="login" (loginChange)="CheckLogin()"></mainlayout>
+  } @else {
+  <login (loginSuccess)="setLogin()"></login>
 } 
 
 <!-- <div *ngIf="loading">

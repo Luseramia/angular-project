@@ -3,7 +3,7 @@
     Sidenav content
   </mat-sidenav>
   <div style="max-height: 10vh">
-    <navbar (Navtoggle)="sidenav.toggle()"></navbar>
+    <navbar (Navtoggle)="sidenav.toggle()" [login]="login"  (loginChange)="updateLogin($event)" ></navbar>
   </div>
   <div style="max-height: 90vh">
     <div style="height: 90vh"><router-outlet></router-outlet></div>
