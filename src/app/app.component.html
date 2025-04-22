@@ -1,6 +1,6 @@
 <!-- <router-outlet></router-outlet> -->
- @if(!login){
-   <mainlayout [login]="login" (loginChange)="CheckLogin()"></mainlayout>
+ @if(!loginState){
+   <mainlayout></mainlayout>
   } @else {
   <login (loginSuccess)="setLogin()"></login>
 } 

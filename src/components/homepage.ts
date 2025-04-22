@@ -10,7 +10,6 @@ import {
 } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HttpService } from '../services/http-service';
-import { retry } from 'rxjs';
 @Component({
   selector: 'homepage',
   standalone: true,
@@ -38,7 +37,7 @@ export class Homepage implements OnInit {
     }
 
   async getProducts() {
-    const result = await this.httpService.PostData<Product[]>('/getProducts', {});
+    const result = await this.httpService.GetData<Product[]>('/products');
     if ('body' in result) {
       // กรณีเป็น HttpResponse
       if (result.body !== null) {
@@ -52,15 +51,6 @@ export class Homepage implements OnInit {
           return product
         });
         this.products = data
-        // this.products = data
-        // result.body.data.map((item)=>{
-        //   this.products =  {
-        //     ...product,
-        //     productImage: this.sanitizer.bypassSecurityTrustUrl(
-        //       `data:image/png;base64,${product.productImage}`
-        //     ) as string,
-        //   };
-        // })
       } else {
         console.error('Response body is null');
       }

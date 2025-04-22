@@ -6,7 +6,6 @@ import { HttpService } from '../services/http-service';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import {MatButtonModule} from '@angular/material/button';
-import { log } from 'node:console';
 @Component({
   selector: 'product',
   standalone: true,

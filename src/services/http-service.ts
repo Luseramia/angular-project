@@ -48,4 +48,38 @@ export class HttpService {
       }
     }
   }
+  async GetData<T>(endpoint: string): Promise<HttpResponse<T> | { status: number; message: string; error: any ;}> {
+    try {
+      const response = await lastValueFrom(
+        this.http.get<T>(`http://localhost:5192${endpoint}`, {
+          withCredentials: true,
+          observe: 'response',
+          responseType: 'json', 
+          
+        })
+      );
+  
+      return response; 
+    } catch (error: any) {
+      // Handle error หาก response เป็น JSON แต่ responseType เป็น Blob
+      if (
+        error.error instanceof Blob &&
+        error.error.type === 'application/problem+json'
+      ) {
+        const errorText = await error.error.text();
+        const parsedError = JSON.parse(errorText);
+        return {
+          status: error.status,
+          message: parsedError.message || error.message,
+          error: parsedError,
+        };
+      } else {
+        return {
+          status: error.status,
+          message: error.message,
+          error: error.error,
+        };
+      }
+    }
+  }
 }

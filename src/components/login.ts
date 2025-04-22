@@ -19,9 +19,13 @@ import {
   RouterLink,
   RouterLinkActive,
   Router,
+  ActivatedRoute,
 } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { Loading } from './loading';
+import { LoginStateService, UserService } from '../services/user';
+import { UserData } from '../interfaces/interface';
+import { AuthService } from '../router-gaurd/auth.service';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -56,32 +60,53 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class Login {
   @Output() loginSuccess = new EventEmitter<void>();
-  
+  private loginStateService = inject(LoginStateService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
   hide = signal(true);
   loading = false;
   usernameControl = new FormControl('', [Validators.required]);
   passwordControl = new FormControl('', [Validators.required]);
   matcher = new MyErrorStateMatcher();
+  returnUrl = '/';
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  constructor(private router: Router,private cdr: ChangeDetectorRef) {}
+  constructor(private router: Router,private cdr: ChangeDetectorRef,private route: ActivatedRoute) {
+    // รับ returnUrl จาก query params (ถ้ามี)
+    this.route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] || '/';
+    });
+  }
   private httpService = inject(HttpService);
   async Login(): Promise<void> {
-    const dataToSend: DataToSend = {
-      username: this.usernameControl.value!,
-      password: this.passwordControl.value!,
-    };
-    // this.router.navigate(['/test']);
-    const result = await this.httpService.PostData('/login', dataToSend);
+    // const dataToSend: DataToSend = {
+    //   username: this.usernameControl.value!,
+    //   password: this.passwordControl.value!,
+    // };
+    // console.log(this.returnUrl);
     
-    if (result.status == 200) {
-      this.loginSuccess.emit();
-    }
+    // // this.router.navigate(['/test']);
+    // const result = await this.httpService.PostData<UserData>('/login', dataToSend);
+    // if (result.status == 200 && 'body' in result && result.body != null) {
+    //   this.loginSuccess.emit();
+    //   this.userService.setUserData(result.body);
+    //   this.loginStateService.setLoginState(true)
+    // }
+    // else{
+    //   console.log(result)
+    // }
+    this.authService.login(this.usernameControl.value!, this.passwordControl.value!).subscribe({
+      next: () => {
+        this.loginSuccess.emit();
+        this.router.navigateByUrl(this.returnUrl);
+      },
+      error: err => {
+        this.loading = false;
+      }
+    });
   }
-
-
   
 }
 
@@ -89,3 +114,4 @@ interface DataToSend {
   username: string;
   password: string;
 }
+

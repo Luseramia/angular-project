@@ -20,6 +20,12 @@
             <input matInput [formControl]="productPrice" />
           </mat-form-field>
         </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field class="w-4/6">
+            <mat-label>tag</mat-label>
+            <input matInput [formControl]="tag" />
+          </mat-form-field>
+        </mat-grid-tile>
         <mat-grid-tile >
           <button mat-raised-button (click)="fileInput.click()">
             เพิ่มรูปภาพ
@@ -37,6 +43,15 @@
             accept="image/*"
           />
         </mat-grid-tile>
+        <mat-grid-tile>
+          @if(productTypes){
+        <mat-select [(ngModel)]="productTypeId">
+          @for (productType of productTypes; track productType.type_id) {
+            <mat-option [value]="productType.type_id">{{productType.type_name}}</mat-option>
+          }
+        </mat-select>
+      }
+      </mat-grid-tile>
         <mat-grid-tile
           ><button mat-flat-button (click)="sendData()">
             บันทึก
