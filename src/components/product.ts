@@ -6,7 +6,6 @@ import { HttpService } from '../services/http-service';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import {MatButtonModule} from '@angular/material/button';
-import { log } from 'node:console';
 @Component({
   selector: 'product',
   standalone: true,
@@ -28,23 +27,24 @@ export class Product implements OnInit {
       this.product_id = params.get('id');
       console.log('ID from URL:', this.product_id);
     });
-    const result = await this.httpService.PostData<product>('/findProduct', { productId: this.product_id });
+    const result = await this.httpService.PostData<product>('/products/getProductById', { productId: this.product_id });
     if (result instanceof HttpResponse) {
-      if (result.body?.imgId) {
         this.product = result.body
-        const image = await this.httpService.PostData<{ imageData?: string }>('/findImage', { imgId: result.body.imgId });
-        if (image instanceof HttpResponse) {
-          if (image.body?.imageData) {
-            this.image =this.sanitizer.bypassSecurityTrustUrl(
-            `data:image/png;base64,${image.body.imageData}`
-          ) as string
-          }
+        if(this.product){
+          this.product = {...this.product,productImage:this.sanitizer.bypassSecurityTrustUrl(
+            `data:image/png;base64,${this.product?.productImage}`
+          ) as string}
         }
-      }
+        
     } else {
       console.error('API Error:', result.message);
     }
   }
+
+  async AddItemToCart(productId:string){
+    const result = await this.httpService.PostData('/cart/insertCartItemByUserId', { productId: productId,quantity:1 });
+  }
+
 }
 
 
@@ -54,5 +54,6 @@ interface product {
   productName: string;
   productPrice: number;
   productDescription: string;
-  imgId:string;
+  imageId:string;
+  productImage:string;
 }

@@ -1,15 +1,18 @@
+@if(product){
 <div class="grid grid-cols-2 pt-5 gap-5">
     <div class="h-50v h-50v ">
-        <img [src]="image" class="w-full h-full p-5 rounded-3xl" />
-    </div>
-  <div class="flex flex-col gap-5 h-50v w-30v m-5">
-    @if(product){
+        <img [src]="product.productImage" class="w-full h-full p-5 rounded-3xl" />
+      </div>
+      <div class="flex flex-col gap-5 h-50v w-30v m-5">
         <p class="text-7xl">{{product.productName}}</p>
         <p class="text-5xl">{{product.productPrice}}</p>
-    }
-    <div>
-      <button mat-flat-button>เพิ่มไปยังรถเข็น</button>
-      <button mat-flat-button>ซื้อสินค้า</button>  
+        <div>
+          <button mat-flat-button (click)="AddItemToCart(product.productId)">เพิ่มไปยังรถเข็น</button>
+          <button mat-flat-button>ซื้อสินค้า</button>  
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+}
+@else{
+  <h1>เกิดข้อผิดพลาด</h1>
+}

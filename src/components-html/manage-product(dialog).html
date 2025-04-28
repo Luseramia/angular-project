@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>
+  <div class="flex flex-row justify-between">
+    แก้ไขสินค้า
+    <button  class="bg-red-600 text-yellow-50 rounded-xl w-16" (click)="onDeleteProduct()">ลบ</button>
+  </div>
+</h2>
+<mat-dialog-content>
+  <mat-grid-list cols="2" rowHeight="2:1">
+    <mat-grid-tile>
+      <mat-form-field >
+        <mat-label>ชื่อสินค้า</mat-label>
+        <input matInput [(ngModel)]="productName" />
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <mat-label>รายละเอียด</mat-label>
+        <input matInput [(ngModel)]="productDescription" />
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <mat-label>ราคา</mat-label>
+        <input matInput [(ngModel)]="productPrice" />
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <mat-label>tag</mat-label>
+        <input matInput [(ngModel)]="tag" />
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <img [src]="productImage" class=" h-full"/>
+      <input
+      #fileInput
+      style="display: none"
+      type="file"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      />
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        @if(productTypes){
+          <mat-select [(ngModel)]="typeId">
+            @for (productType of productTypes; track productType.typeId) {
+              <mat-option [value]="productType.typeId">{{productType.typeName}}</mat-option>
+            }
+          </mat-select>
+        }
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <button mat-raised-button (click)="fileInput.click()">แก้ไขรูปภาพ</button>
+    </mat-grid-tile>
+  </mat-grid-list>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button class="bg-yellow-300 text-black rounded-xl w-20 h-12 m-5" (click)="onNoClick()">ยกเลิก</button>
+  <button class="bg-green-500 text-black rounded-xl w-20 h-12" (click)="onSaveClick()">แก้ไข</button>
+  <!-- <button mat-button [mat-dialog-close]="onSaveClick()" >Ok</button> -->
+</mat-dialog-actions>
+
+

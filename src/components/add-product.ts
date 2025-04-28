@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,6 +6,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpService } from '../services/http-service';
 import { FormControl,   FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
+import { ProductTypeService } from '../services/product-type';
+import {ProductType} from '../interfaces/interface'
 @Component({
   selector: 'add-product',
   standalone: true,
@@ -17,16 +20,31 @@ import { FormControl,   FormsModule, ReactiveFormsModule, Validators } from '@an
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
+    MatSelectModule
   ],
   templateUrl: '../components-html/add-product.html',
 })
-export class AddProduct {
+export class AddProduct implements OnInit {
   productName = new FormControl('', [Validators.required]);
   productDescription = new FormControl('', [Validators.required]);
   productPrice = new FormControl('', [Validators.required]);
+  productTypeId = new FormControl('', [Validators.required]);
+  tag = new FormControl('', [Validators.required]);
   file!: File;
+  productTypes!:Array<ProductType>|null
   public objectUrl!: string;
   private httpService = inject(HttpService);
+  private productTypeService = inject(ProductTypeService);
+
+  async ngOnInit(): Promise<void> {
+    this.productTypes = this.productTypeService.getProductType()
+    // const result = await this.httpService.GetData<Array<ProductType>>('/productType');
+    // if('body' in result){
+    //   this.productTypes = result.body
+    // }
+    
+  }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -55,7 +73,6 @@ export class AddProduct {
   }
 
   async sendData() {
-    console.log(this.file!=null)
     if (
       this.productName.value  &&
       this.productDescription.value  &&
@@ -67,9 +84,13 @@ export class AddProduct {
         "productName": this.productName.value,
         "productDescription": this.productDescription.value,
         "productPrice":this.productPrice.value,
-        "file":this.file
+        "file":this.file,
+        "typeId":this.productTypeId,
+        "tag":this.tag.value
       };
-      const result = await this.httpService.PostData('/insert-product',dataTosent);
+      console.log(dataTosent);
+      
+      const result = await this.httpService.PostData("/products",dataTosent);
     }
   }
 }

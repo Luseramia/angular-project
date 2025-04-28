@@ -1,7 +1,9 @@
 import {
   Component,
   Injectable,
+  OnChanges,
   OnInit,
+  SimpleChanges,
   inject,
 } from '@angular/core';
 import { NgModule } from '@angular/core';
@@ -21,6 +23,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { jwtDecode } from 'jwt-decode';
 import { HttpService } from '../services/http-service';
 import { Loading } from '../components/loading';
+import { LoginStateService } from '../services/user';
+import { ProductTypeService } from '../services/product-type';
 
 @Component({
   selector: 'app-root',
@@ -34,72 +38,38 @@ import { Loading } from '../components/loading';
     CommonModule,
     MainLayout,
     Loading,
+    
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 @Injectable({ providedIn: 'root' })
-export class AppComponent implements OnInit {
-  constructor(private cookieService: CookieService,private router: Router) {}
-  login: boolean = false; 
+export class AppComponent {
+  constructor(private cookieService: CookieService,private router: Router,private loginStateService: LoginStateService
+  ) { this.loginStateService.login$.subscribe(loginState => {
+    this.loginState = loginState;
+  });}
+  private productTypeService = inject(ProductTypeService);
+  loginState: boolean = false; 
   title = 'angular-project';
-  test = false;
-  abc = 'abc';
-  initialCount = 18;
   loading = true;
-  id: string = '';
-  firstName: string = 'asdfasdf';
-  firstLoad : Boolean = true;
-  private httpService = inject(HttpService);
 
   async setLogin(): Promise<void> {
-    this.login = !this.login;
-    const token = this.cookieService.get('jwtToken');
-    if (!token) {
-      console.log('ไม่มีtoken'); // ไม่มี Token แสดงว่าไม่ได้ล็อกอิน
-    }
-
     try {
-      const decodedToken: any = jwtDecode(token);
-      console.log(decodedToken);
-      const isExpired = decodedToken.exp * 1000 < Date.now(); // ตรวจสอบวันหมดอายุ
-      console.log(isExpired);
+      const newLoginState = false;
+      this.loginStateService.setLoginState(newLoginState);
+      this.loginStateService.login$.subscribe(loginState => {
+        this.loginState = loginState;
+      });
     } catch (error) {
-      console.error('Invalid token', error);
+      console.log(error);
+      
     }
   }
 
-  ngOnInit(): void {
-  //   this.CheckLogin();
-  }
   onLoginChange(newValue: boolean) {
-    console.log('app work')
-    this.login = newValue;
+    this.loginStateService.setLoginState(newValue);
   }
 
-  async CheckLogin(): Promise<void> {
-    // console.log('test');
-    // console.log('1');
-    this.loading = true;
-    try {
-      const result = await this.httpService.PostData('/checkLogin', {});
-      // result.status === 200?console.log('loginned'):this.login
-      this.login = !(result.status === 200);
-    } catch (error) {
-      console.error('Error during login check:', error);
-      // this.login = false;
-    } finally {
-      setTimeout(() => {
-        this.loading = false;
-      }, 10);
-// โหลดเสร็จ ไม่ว่าจะสำเร็จหรือไม่
-    }
-  }
 
-  // getData(): void{
-  //   this.http.get('http://localhost:5192/test1',{ withCredentials: true }).subscribe(res=>{
-
-  //     console.log('respones = ',res);
-  //   })
-  // }
 }

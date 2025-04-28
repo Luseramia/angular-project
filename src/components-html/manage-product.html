@@ -1,0 +1,47 @@
+<!-- <mat-grid-list cols="12" >
+<div class="flex flex-col">
+@for (item of products; track item.productId) {
+  <div class="w-full">
+    <mat-grid-list cols="3" rowHeight="5:1">
+      <mat-grid-tile>
+          <p>{{item.productName}}</p>
+        </mat-grid-tile>
+          <mat-grid-tile>
+          <img  [src]="item.productImage" class="w-10 h-10" />
+        </mat-grid-tile>
+          <mat-grid-tile>
+          <button mat-raised-button>รายละเอียด</button>
+          </mat-grid-tile>
+        </mat-grid-list>
+        </div>
+   } @empty {
+  <li>There are no items.</li>
+  }
+</div>
+</mat-grid-list> -->
+@if(products && products.length > 0 && !updating) {
+<table mat-table [dataSource]="products" class="mat-elevation-z8">
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+  <!-- Position Column -->
+  <ng-container matColumnDef="productName">
+    <th mat-header-cell *matHeaderCellDef> ชื่อ </th>
+    <td mat-cell *matCellDef="let element"> {{element.productName}} </td>
+  </ng-container>
+  <!-- Name Column -->
+  <ng-container matColumnDef="productPrice">
+    <th mat-header-cell *matHeaderCellDef> ราคา </th>
+    <td mat-cell *matCellDef="let element"> {{element.productPrice}} </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+  <tr
+  mat-row
+  (click)="selectedRow(row, i)"
+  *matRowDef="let row; columns: displayedColumns; let i = index"
+></tr>
+</table>
+}
+

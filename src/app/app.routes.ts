@@ -5,9 +5,19 @@ import { Homepage } from '../components/homepage';
 import { Product } from '../components/product';
 import { Loading } from '../components/loading';
 import { AddProduct } from '../components/add-product';
+import { Profile } from '../components/profile';
+import { ManageProduct } from '../components/manage-product';
+import {  AddTypeProduct} from '../components/admin-add-type-product';
+import { AuthGuard } from '../router-gaurd';
 export const routes: Routes = [
   { path: '', component: Homepage },
-  { path: 'login', component: Login },
-  { path: 'product/:id', component: Product,runGuardsAndResolvers: 'paramsChange',  },
-  {path: 'add-product' , component: AddProduct}
+  {
+    path: 'product/:id',
+    component: Product,
+    runGuardsAndResolvers: 'paramsChange',
+  },
+  { path: 'add-product', component: AddProduct,canActivate: [AuthGuard] },
+  { path: 'profile', component: Profile,canActivate: [AuthGuard] },
+  { path: 'getProductByUserId', component: ManageProduct,canActivate: [AuthGuard] },
+  { path: 'addProductType', component: AddTypeProduct,canActivate: [AuthGuard],data: { roles: ['Seller']} }, 
 ];

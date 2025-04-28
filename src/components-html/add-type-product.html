@@ -1,0 +1,20 @@
+<div class="p-10">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <mat-grid-list cols="2" rowHeight="5:1">
+          <mat-grid-tile>
+            <mat-form-field class="w-4/6">
+              <mat-label>ชื่อประเภท</mat-label>
+              <input matInput [formControl]="typeProductName" />
+            </mat-form-field>
+          </mat-grid-tile>
+          <mat-grid-tile
+            ><button mat-flat-button (click)="Submit()">
+              บันทึก
+            </button></mat-grid-tile
+          >
+        </mat-grid-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
