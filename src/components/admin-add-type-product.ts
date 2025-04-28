@@ -30,7 +30,7 @@ export class AddTypeProduct {
     private httpService = inject(HttpService);
     async Submit() {
     if(this.typeProductName.value){
-      const result = await this.httpService.PostData('/products/insertProductType',{typeName:this.typeProductName.value});
+      const result = await this.httpService.PostData('/productType/insertProductType',{typeName:this.typeProductName.value});
       if(result.status==200){
         console.log("success");
         

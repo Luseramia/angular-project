@@ -8,12 +8,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root',
    })
 export class UserService{
-    userData!:UserData;
+  private userData = new BehaviorSubject<UserData>({userId:"",username:"",role:"",name:""}) || undefined;
+    // private userData!:UserData;
     setUserData(userData:UserData){
-        this.userData = userData;
+        this.userData.next(userData);
     }
     getUserData(){
-        return this.userData;
+        return this.userData.value;
     }
     
   }

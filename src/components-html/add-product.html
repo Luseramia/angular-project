@@ -46,8 +46,8 @@
         <mat-grid-tile>
           @if(productTypes){
         <mat-select [(ngModel)]="productTypeId">
-          @for (productType of productTypes; track productType.type_id) {
-            <mat-option [value]="productType.type_id">{{productType.type_name}}</mat-option>
+          @for (productType of productTypes; track productType.typeId) {
+            <mat-option [value]="productType.typeId">{{productType.typeName}}</mat-option>
           }
         </mat-select>
       }

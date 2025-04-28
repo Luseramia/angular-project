@@ -7,7 +7,7 @@
       >
         <mat-card-content>
           <p>{{item.productName}}</p>
-          <img  [src]="item.productImage" class="w-10 h-10" />
+          <img  [src]="item.productImage" class="w-16 h-16 lg:w-32 lg:h-32" />
           <button mat-raised-button (click)="getProduct(item.productId,item)">รายละเอียด</button>
         </mat-card-content>
       </mat-card>

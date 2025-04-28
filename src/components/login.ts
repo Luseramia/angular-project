@@ -26,6 +26,7 @@ import { Loading } from './loading';
 import { LoginStateService, UserService } from '../services/user';
 import { UserData } from '../interfaces/interface';
 import { AuthService } from '../router-gaurd/auth.service';
+import { response } from 'express';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -68,7 +69,7 @@ export class Login {
   usernameControl = new FormControl('', [Validators.required]);
   passwordControl = new FormControl('', [Validators.required]);
   matcher = new MyErrorStateMatcher();
-  returnUrl = '/';
+  returnUrl = '';
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
@@ -76,7 +77,7 @@ export class Login {
   constructor(private router: Router,private cdr: ChangeDetectorRef,private route: ActivatedRoute) {
     // รับ returnUrl จาก query params (ถ้ามี)
     this.route.queryParams.subscribe(params => {
-      this.returnUrl = params['returnUrl'] || '/';
+      this.returnUrl = params['returnUrl'] || '';
     });
   }
   private httpService = inject(HttpService);
@@ -98,12 +99,15 @@ export class Login {
     //   console.log(result)
     // }
     this.authService.login(this.usernameControl.value!, this.passwordControl.value!).subscribe({
-      next: () => {
+      next: (response) => {
+        localStorage.setItem('userRole', JSON.stringify(response.body.role));
+        this.userService.setUserData(response.body);
         this.loginSuccess.emit();
         this.router.navigateByUrl(this.returnUrl);
       },
       error: err => {
         this.loading = false;
+        
       }
     });
   }

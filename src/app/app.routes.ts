@@ -15,10 +15,9 @@ export const routes: Routes = [
     path: 'product/:id',
     component: Product,
     runGuardsAndResolvers: 'paramsChange',
-    canActivate: [AuthGuard] 
   },
   { path: 'add-product', component: AddProduct,canActivate: [AuthGuard] },
   { path: 'profile', component: Profile,canActivate: [AuthGuard] },
   { path: 'getProductByUserId', component: ManageProduct,canActivate: [AuthGuard] },
-  { path: 'addProductType', component: AddTypeProduct, }, 
+  { path: 'addProductType', component: AddTypeProduct,canActivate: [AuthGuard],data: { roles: ['Seller']} }, 
 ];

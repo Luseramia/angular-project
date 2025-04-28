@@ -10,6 +10,7 @@ import {
 } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HttpService } from '../services/http-service';
+import { ProductTypeService } from '../services/product-type';
 @Component({
   selector: 'homepage',
   standalone: true,
@@ -34,6 +35,7 @@ export class Homepage implements OnInit {
   }
   ngOnInit(): void {
     this.getProducts();
+    
     }
 
   async getProducts() {

@@ -24,6 +24,7 @@ import { jwtDecode } from 'jwt-decode';
 import { HttpService } from '../services/http-service';
 import { Loading } from '../components/loading';
 import { LoginStateService } from '../services/user';
+import { ProductTypeService } from '../services/product-type';
 
 @Component({
   selector: 'app-root',
@@ -48,6 +49,7 @@ export class AppComponent {
   ) { this.loginStateService.login$.subscribe(loginState => {
     this.loginState = loginState;
   });}
+  private productTypeService = inject(ProductTypeService);
   loginState: boolean = false; 
   title = 'angular-project';
   loading = true;

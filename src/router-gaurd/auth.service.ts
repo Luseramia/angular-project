@@ -20,6 +20,9 @@ export class AuthService {
   // เข้าสู่ระบบ (server จะตั้งค่า cookie ให้)
   login(username: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { username, password }, {
+      observe: 'response',
+      responseType: 'json', 
+      headers: { 'Content-Type': 'application/json' },
       withCredentials: true // สำคัญมากเพื่อให้ browser รับ cookie จาก response
     }).pipe(
       tap(() => {
@@ -34,12 +37,14 @@ export class AuthService {
 
   // ออกจากระบบ (server จะลบ cookie)
   logout(): Observable<any> {
+    console.log('logout work');
+    
     return this.http.post<any>(`${this.apiUrl}/logout`, {}, {
       withCredentials: true
     }).pipe(
       tap(() => {
         this._isAuthenticated = false;
-        this.router.navigate(['/login']);
+        localStorage.clear();
       }),
       catchError(error => {
         return throwError(() => error);
@@ -49,6 +54,16 @@ export class AuthService {
 
   // ตรวจสอบว่ายังได้รับการ authenticate อยู่หรือไม่
   checkAuthStatus(): Observable<boolean> {
+    var Role:string|null = "";
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const data = localStorage.getItem('userRole');
+      Role = data
+    }
+    if(!Role){
+      this.logout().subscribe();
+      return of(false);
+    }
+
     return this.http.get<any>(`${this.apiUrl}/verify`, {
       withCredentials: true
     }).pipe(

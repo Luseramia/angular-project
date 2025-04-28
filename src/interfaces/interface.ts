@@ -12,5 +12,14 @@ export interface Product{
   productPrice: number;
   productDescription: string;
   productImage: string | SafeResourceUrl;
-  imgId:string;
+  tag:string;
+  typeId:string;
+  imageId:string;
+}
+
+
+
+export interface  ProductType{
+  typeId:string;
+  typeName:string;
 }

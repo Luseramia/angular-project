@@ -7,7 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { HttpService } from '../services/http-service';
 import { FormControl,   FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
-
+import { ProductTypeService } from '../services/product-type';
+import {ProductType} from '../interfaces/interface'
 @Component({
   selector: 'add-product',
   standalone: true,
@@ -33,12 +34,14 @@ export class AddProduct implements OnInit {
   productTypes!:Array<ProductType>|null
   public objectUrl!: string;
   private httpService = inject(HttpService);
+  private productTypeService = inject(ProductTypeService);
 
   async ngOnInit(): Promise<void> {
-    const result = await this.httpService.GetData<Array<ProductType>>('/productType');
-    if('body' in result){
-      this.productTypes = result.body
-    }
+    this.productTypes = this.productTypeService.getProductType()
+    // const result = await this.httpService.GetData<Array<ProductType>>('/productType');
+    // if('body' in result){
+    //   this.productTypes = result.body
+    // }
     
   }
 
@@ -87,7 +90,7 @@ export class AddProduct implements OnInit {
       };
       console.log(dataTosent);
       
-      const result = await this.httpService.PostData('/products',dataTosent);
+      const result = await this.httpService.PostData("/products",dataTosent);
     }
   }
 }
@@ -97,9 +100,4 @@ interface File {
   type: any;
   size: number;
   content: string;
-}
-
-interface  ProductType{
-  type_id:string;
-  type_name:string;
 }
