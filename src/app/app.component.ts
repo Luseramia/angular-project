@@ -25,6 +25,10 @@ import { HttpService } from '../services/http-service';
 import { Loading } from '../components/loading';
 import { LoginStateService } from '../services/user';
 import { ProductTypeService } from '../services/product-type';
+import { CartService } from '../services/cart-service';
+import { Init } from 'v8';
+import { AuthService } from '../router-gaurd/auth.service';
+import { CartItem } from '../interfaces/interface';
 
 @Component({
   selector: 'app-root',
@@ -44,15 +48,47 @@ import { ProductTypeService } from '../services/product-type';
   styleUrl: './app.component.css',
 })
 @Injectable({ providedIn: 'root' })
-export class AppComponent {
-  constructor(private cookieService: CookieService,private router: Router,private loginStateService: LoginStateService
-  ) { this.loginStateService.login$.subscribe(loginState => {
+export class AppComponent implements OnInit {
+  constructor(private cookieService: CookieService,private router: Router,private loginStateService: LoginStateService,private authService: AuthService ,private cartService:CartService) { 
+    this.loginStateService.login$.subscribe(loginState => {
     this.loginState = loginState;
-  });}
+  });
+  this.authService.isAuthenticated.subscribe((loginState) => {
+    this.isLoginned = loginState;
+  });
+}
   private productTypeService = inject(ProductTypeService);
+  private httpService = inject(HttpService)
   loginState: boolean = false; 
+  isLoginned:boolean = false;
   title = 'angular-project';
   loading = true;
+  private cartItems:Array<CartItem> = [];
+  async ngOnInit(): Promise<void> {
+    this.cartService.cartItems.subscribe((cartItems) => {
+      this.cartItems = cartItems;
+    });
+    this.cartService.countItem.subscribe((countItem) => {
+      console.log('จำนวนสินค้าในตะกร้า:', countItem);
+    });
+    const cci = localStorage.getItem('countCartItem');
+    
+    
+    // this.loginStateService.login$.subscribe(loginState => {
+      //   this.loginState = loginState;
+      // });
+      // console.log(this.isLoginned);
+      this.authService.isAuthenticated.subscribe(async (loginState) => {
+        this.isLoginned = loginState;
+        if(this.isLoginned){
+        console.log(cci);
+        // const result = await this.httpService.GetData<Array<CartItem>>('/cart/getItemInCart');
+        // if("body" in result && result.body){
+        //   this.cartService.setCartItem(result.body)
+        // }
+        // console.log(result);
+      }})
+    }    
 
   async setLogin(): Promise<void> {
     try {

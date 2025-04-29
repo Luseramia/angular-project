@@ -1,4 +1,5 @@
 import { SafeResourceUrl } from '@angular/platform-browser';
+import exp from 'constants';
 export interface UserData{
     userId:string;
     name:string;
@@ -22,4 +23,10 @@ export interface Product{
 export interface  ProductType{
   typeId:string;
   typeName:string;
+}
+
+
+export interface CartItem{
+  productId:string
+  quantity:number
 }

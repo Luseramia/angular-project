@@ -24,9 +24,10 @@ import {
 import { ChangeDetectorRef } from '@angular/core';
 import { Loading } from './loading';
 import { LoginStateService, UserService } from '../services/user';
-import { UserData } from '../interfaces/interface';
+import { CartItem, UserData } from '../interfaces/interface';
 import { AuthService } from '../router-gaurd/auth.service';
 import { response } from 'express';
+import { CartService } from '../services/cart-service';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -74,7 +75,7 @@ export class Login {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  constructor(private router: Router,private cdr: ChangeDetectorRef,private route: ActivatedRoute) {
+  constructor(private router: Router,private cdr: ChangeDetectorRef,private route: ActivatedRoute,private cartService:CartService) {
     // รับ returnUrl จาก query params (ถ้ามี)
     this.route.queryParams.subscribe(params => {
       this.returnUrl = params['returnUrl'] || '';
@@ -99,9 +100,13 @@ export class Login {
     //   console.log(result)
     // }
     this.authService.login(this.usernameControl.value!, this.passwordControl.value!).subscribe({
-      next: (response) => {
+      next: async (response) => {
         localStorage.setItem('userRole', JSON.stringify(response.body.role));
         this.userService.setUserData(response.body);
+        const result = await this.httpService.GetData<Array<CartItem>>('/cart/getItemInCart');
+        if("body" in result && result.body){
+          this.cartService.setCartItem(result.body)
+        }
         this.loginSuccess.emit();
         this.router.navigateByUrl(this.returnUrl);
       },

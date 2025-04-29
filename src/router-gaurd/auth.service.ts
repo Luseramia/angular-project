@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError, of } from 'rxjs';
+import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:5192'; // ใช้ port เดียวกับที่คุณใช้ในโค้ดอื่น
-  private _isAuthenticated = false;
-  
+  private _isAuthenticated = new BehaviorSubject<boolean>(false);
+  public isAuthenticated: Observable<boolean> = this._isAuthenticated.asObservable();
   constructor(private http: HttpClient, private router: Router) {
     // ตรวจสอบสถานะการ authenticate เมื่อเริ่มต้น service
     // this.checkAuthStatus().subscribe();
@@ -26,10 +26,10 @@ export class AuthService {
       withCredentials: true // สำคัญมากเพื่อให้ browser รับ cookie จาก response
     }).pipe(
       tap(() => {
-        this._isAuthenticated = true;
+        this._isAuthenticated.next(true)
       }),
       catchError(error => {
-        this._isAuthenticated = false;
+        this._isAuthenticated.next(false)
         return throwError(() => error);
       })
     );
@@ -43,7 +43,7 @@ export class AuthService {
       withCredentials: true
     }).pipe(
       tap(() => {
-        this._isAuthenticated = false;
+        this._isAuthenticated.next(false)
         localStorage.clear();
       }),
       catchError(error => {
@@ -68,11 +68,11 @@ export class AuthService {
       withCredentials: true
     }).pipe(
       map(() => {
-        this._isAuthenticated = true;
+        this._isAuthenticated.next(true)
         return true;
       }),
       catchError(() => {
-        this._isAuthenticated = false;
+        this._isAuthenticated.next(false)
         return of(false);
       })
     );
@@ -90,6 +90,6 @@ export class AuthService {
 
   // getter สำหรับสถานะปัจจุบัน (non-blocking)
   get authenticated(): boolean {
-    return this._isAuthenticated;
+    return this._isAuthenticated.value;
   }
 }

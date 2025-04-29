@@ -6,6 +6,7 @@ import { HttpService } from '../services/http-service';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import {MatButtonModule} from '@angular/material/button';
+import { CartService } from '../services/cart-service';
 @Component({
   selector: 'product',
   standalone: true,
@@ -17,6 +18,7 @@ export class Product implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private paramSub!: Subscription; // ใช้เก็บ subscription
+  private cartService = inject(CartService)
   private httpService = inject(HttpService);
   public product_id!: string | null;
   public productDescription!: string | null;
@@ -42,6 +44,7 @@ export class Product implements OnInit {
   }
 
   async AddItemToCart(productId:string){
+    this.cartService.setCartItem([{productId:productId,quantity:1}])
     const result = await this.httpService.PostData('/cart/insertCartItemByUserId', { productId: productId,quantity:1 });
   }
 
