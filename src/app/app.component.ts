@@ -52,9 +52,11 @@ export class AppComponent implements OnInit {
   constructor(private cookieService: CookieService,private router: Router,private loginStateService: LoginStateService,private authService: AuthService ,private cartService:CartService) { 
     this.loginStateService.login$.subscribe(loginState => {
     this.loginState = loginState;
+    
   });
   this.authService.isAuthenticated.subscribe((loginState) => {
     this.isLoginned = loginState;
+    this.cartService.setCartItem([]);
   });
 }
   private productTypeService = inject(ProductTypeService);
@@ -68,26 +70,27 @@ export class AppComponent implements OnInit {
     this.cartService.cartItems.subscribe((cartItems) => {
       this.cartItems = cartItems;
     });
-    this.cartService.countItem.subscribe((countItem) => {
-      console.log('จำนวนสินค้าในตะกร้า:', countItem);
+    this.cartService.countItem.subscribe(async(countItem) => {
+     
     });
-    const cci = localStorage.getItem('countCartItem');
     
-    
+    // const cci = localStorage.getItem('countCartItem');
+    // const countFromStorage = cci ? parseInt(cci, 10) : 0;
+  
+    // // ตรวจสอบเฉพาะตอน F5 หรือรีเฟรชหน้า
+    // if (this.isLoginned) {
+    //   const result = await this.httpService.GetData<Array<CartItem>>('/cart/getItemInCart');
+    //   if ('body' in result && result.body) {
+    //     this.cartService.setCartItem(result.body);
+    //   }
+    // }
     // this.loginStateService.login$.subscribe(loginState => {
       //   this.loginState = loginState;
       // });
       // console.log(this.isLoginned);
-      this.authService.isAuthenticated.subscribe(async (loginState) => {
+      this.authService.isAuthenticated.subscribe((loginState) => {
         this.isLoginned = loginState;
-        if(this.isLoginned){
-        console.log(cci);
-        // const result = await this.httpService.GetData<Array<CartItem>>('/cart/getItemInCart');
-        // if("body" in result && result.body){
-        //   this.cartService.setCartItem(result.body)
-        // }
-        // console.log(result);
-      }})
+        })
     }    
 
   async setLogin(): Promise<void> {

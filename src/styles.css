@@ -41,3 +41,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   .demo-row-is-clicked {
   font-weight: bold;
 }
+
+.img-lg{
+  width: 200px;
+  height: 200px;
+  object-fit: contain
+} 

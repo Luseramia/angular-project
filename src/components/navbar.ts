@@ -34,18 +34,19 @@ export class Navbar implements OnInit {
   // private authService = inject(AuthService)
   private httpService = inject(HttpService);
   private cartItems:Array<CartItem> = [];
+  public countCartItem:Number = 0;
   constructor(private router: Router, private authService: AuthService,private cartService:CartService) {
-    this.cartService.cartItems.subscribe((cartItems)=>{
-      this.cartItems = cartItems;
-    })
+    const cci = localStorage.getItem('countCartItem');
+    const countFromStorage = cci ? parseInt(cci, 10) : 0;
+    this.countCartItem = countFromStorage
   }
   public isLoginned: boolean = false;
   async ngOnInit(): Promise<void> {
     this.authService.isAuthenticated.subscribe((loginState) => {
       this.isLoginned = loginState;
     });
-    this.cartService.cartItems.subscribe((cartItems)=>{
-      this.cartItems = cartItems;
+    this.cartService.countItem.subscribe((countItem)=>{
+      this.countCartItem = countItem;
     });
 
     // this.authService.isAuthenticated.subscribe(async (loginState) => {
@@ -65,6 +66,9 @@ export class Navbar implements OnInit {
   }
   routeToHomePage() {
     this.router.navigate(['']);
+  }
+  routeToCart() {
+    this.router.navigate(['/cart']);
   }
   // @Input() Navtoggle!:Promise<MatDrawerToggleResult>;
 }

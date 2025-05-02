@@ -1,0 +1,44 @@
+<div>
+    <mat-card appearance="outlined">
+        <mat-card-content>
+            <mat-grid-list cols="7" rowHeight="5:1">
+                <mat-grid-tile colspan="3">
+                    <div class="flex flex-row justify-between w-full" >
+                        <div>checkbox</div>
+                        <div>picture</div>
+                        <div>productname</div>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile>ราคาต่อชิ้น</mat-grid-tile>
+                <mat-grid-tile>จำนวน</mat-grid-tile>
+                <mat-grid-tile>ราคารวม</mat-grid-tile>
+                <mat-grid-tile>ลบ</mat-grid-tile>
+              </mat-grid-list>
+        </mat-card-content>
+    </mat-card>
+</div>
+@if(cartItems){
+    @for (cartItem of cartItemData; track cartItem.productId) {
+<div class="m-8">
+    <mat-card appearance="outlined">
+        <mat-card-content>
+            <mat-grid-list cols="7" rowHeight="1:1">
+                <mat-grid-tile colspan="3">
+                    <div class="flex flex-row justify-between w-full items-center" >
+                        <div>checkbox</div>
+                        <div>
+                            <img [src]="cartItem.productImage" width="250px">
+                        </div>
+                        <div>{{cartItem.productName}}</div>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile>{{cartItem.productPrice}}</mat-grid-tile>
+                <mat-grid-tile>{{cartItem.quantity}}</mat-grid-tile>
+                <mat-grid-tile>{{cartItem.productPrice*cartItem.quantity}}</mat-grid-tile>
+                <mat-grid-tile>ปุ่มลบ</mat-grid-tile>
+              </mat-grid-list>
+        </mat-card-content>
+    </mat-card>
+</div>
+    }
+}

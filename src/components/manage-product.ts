@@ -66,8 +66,8 @@ export class ManageProduct implements OnInit {
       });
       const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
         data: {product:row,"dialogCloseEvent":dialogCloseEvent,"deleteProduct":deleteProduct},
-        height:'50rem',
-        width:'1000px',
+        height:'2000px',
+        width:'2000px',
       });
 
       dialogRef.afterClosed().subscribe(async result => {
@@ -270,7 +270,7 @@ export class DialogOverviewExampleDialog {
     else{
         const updatedProduct = {
           productId:this.data.product.productId,
-          productName: this.productName(), // Use () to get the value
+          productName: this.productName(), 
           productPrice: this.productPrice(),
           productDescription:this.productDescription(),
           tag:this.tag(),
@@ -289,7 +289,6 @@ export class DialogOverviewExampleDialog {
       confirmButtonText: "ใช่",
       denyButtonText: `ไม่ใช่`
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         if (this.data.deleteProduct) {
           this.data.deleteProduct.emit();

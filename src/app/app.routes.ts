@@ -9,6 +9,7 @@ import { Profile } from '../components/profile';
 import { ManageProduct } from '../components/manage-product';
 import {  AddTypeProduct} from '../components/admin-add-type-product';
 import { AuthGuard } from '../router-gaurd';
+import { Cart } from '../components/cart';
 export const routes: Routes = [
   { path: '', component: Homepage },
   {
@@ -20,4 +21,5 @@ export const routes: Routes = [
   { path: 'profile', component: Profile,canActivate: [AuthGuard] },
   { path: 'getProductByUserId', component: ManageProduct,canActivate: [AuthGuard] },
   { path: 'addProductType', component: AddTypeProduct,canActivate: [AuthGuard],data: { roles: ['Seller']} }, 
+  { path:'cart',  component:Cart, canActivate: [AuthGuard]}
 ];

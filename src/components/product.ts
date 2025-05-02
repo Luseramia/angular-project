@@ -29,9 +29,9 @@ export class Product implements OnInit {
       this.product_id = params.get('id');
       console.log('ID from URL:', this.product_id);
     });
-    const result = await this.httpService.PostData<product>('/products/getProductById', { productId: this.product_id });
-    if (result instanceof HttpResponse) {
-        this.product = result.body
+    const result = await this.httpService.PostData<Array<product>>('/products/getProductById', { productId: [this.product_id] });
+    if (result instanceof HttpResponse && result.body) {
+        this.product = result.body[0]
         if(this.product){
           this.product = {...this.product,productImage:this.sanitizer.bypassSecurityTrustUrl(
             `data:image/png;base64,${this.product?.productImage}`
@@ -39,7 +39,7 @@ export class Product implements OnInit {
         }
         
     } else {
-      console.error('API Error:', result.message);
+      // console.error('API Error:', result.message);
     }
   }
 

@@ -11,6 +11,7 @@ import {
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HttpService } from '../services/http-service';
 import { ProductTypeService } from '../services/product-type';
+import { CardContent } from './card-content';
 @Component({
   selector: 'homepage',
   standalone: true,
@@ -21,6 +22,7 @@ import { ProductTypeService } from '../services/product-type';
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
+    CardContent
   ],
   templateUrl: '../components-html/homepage.html',
 })
@@ -46,9 +48,9 @@ export class Homepage implements OnInit {
         var data = result.body.map((product) => {
           product = {
             ...product,
-            productImage: this.sanitizer.bypassSecurityTrustUrl(
-              `data:image/png;base64,${product.productImage}`
-            ) as string,
+            // productImage: this.sanitizer.bypassSecurityTrustUrl(
+            //   `data:image/png;base64,${product.productImage}`
+            // ) as string,
           };
           return product
         });

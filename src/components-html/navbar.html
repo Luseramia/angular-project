@@ -2,9 +2,12 @@
 <div class="flex justify-between items-center  text-white mx-5" style="height:10vh">
    <button (click)="routeToHomePage()"> <h1 class="font-semibold" style="font-size: 2rem;">ShopMall</h1></button>
     <div class="flex flex-row items-center">
-    <mat-icon matBadge="15" aria-hidden="false" aria-label="Example home icon" fontIcon="shopping_cart"></mat-icon>
+        <button (click)="routeToCart()">
+            <mat-icon class="me-5" matBadge="{{countCartItem}}" aria-hidden="false" aria-label="Example home icon" fontIcon="shopping_cart">
+            </mat-icon>
+        </button>
     <div class="bg-white w-10 h-10 rounded-full">
-        <img class=" w-10 h-10 rounded-full" src="/img/user.jpg" (click)="routeLogin()">
+        <img class=" w-10 h-10 rounded-full " src="/img/user.jpg" (click)="routeLogin()">
     </div>
 </div>
 </div>
