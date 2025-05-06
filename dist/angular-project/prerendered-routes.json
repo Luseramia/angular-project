@@ -1,6 +1,9 @@
 {
   "routes": [
     "/",
-    "/test"
+    "/add-product",
+    "/addProductType",
+    "/getProductByUserId",
+    "/profile"
   ]
 }
