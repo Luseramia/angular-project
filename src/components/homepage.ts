@@ -9,8 +9,11 @@ import {
   Router,
 } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { HttpService } from '../services/http-service';
-import { ProductTypeService } from '../services/product-type';
+import { HttpService } from '../services/http.service';
+import { ProductTypeDataService } from '../services/data.service/product-type-data.service';
+import { CardContent } from './card-content';
+import { ProductService } from '../services/product.service';
+import { Product } from '../interfaces/interface';
 @Component({
   selector: 'homepage',
   standalone: true,
@@ -27,6 +30,7 @@ import { ProductTypeService } from '../services/product-type';
 export class Homepage implements OnInit {
   constructor(private router: Router, private sanitizer: DomSanitizer) {}
   private httpService = inject(HttpService);
+  private productService = inject(ProductService)
   public products: Array<Product> = [];
   async getProduct(id: string, product: Product) {
     this.router.navigate(['/product', id], {
@@ -39,11 +43,11 @@ export class Homepage implements OnInit {
     }
 
   async getProducts() {
-    const result = await this.httpService.GetData<Product[]>('/products');
-    if ('body' in result) {
-      // กรณีเป็น HttpResponse
-      if (result.body !== null) {
-        var data = result.body.map((product) => {
+    // const result = await this.httpService.GetData<Product[]>('/products');
+    // this.httpService.PostDataa('/products',{}).subscribe(res=>console.log(res))
+    this.productService.GetProducts().subscribe(res=>{
+        if(res.body){
+          var data = res.body.map((product) => {
           product = {
             ...product,
             productImage: this.sanitizer.bypassSecurityTrustUrl(
@@ -53,22 +57,29 @@ export class Homepage implements OnInit {
           return product
         });
         this.products = data
-      } else {
-        console.error('Response body is null');
       }
-    } else {
-      // กรณีเป็น Error
-      console.error(`Error: ${result.message}, Status: ${result.status}`);
-    }
+    })
+    // if ('body' in result) {
+    //   // กรณีเป็น HttpResponse
+    //   if (result.body !== null) {
+    //     var data = result.body.map((product) => {
+    //       product = {
+    //         ...product,
+    //         // productImage: this.sanitizer.bypassSecurityTrustUrl(
+    //         //   `data:image/png;base64,${product.productImage}`
+    //         // ) as string,
+    //       };
+    //       return product
+    //     });
+    //     this.products = data
+    //   } else {
+    //     console.error('Response body is null');
+    //   }
+    // } else {
+    //   // กรณีเป็น Error
+    //   console.error(`Error: ${result.message}, Status: ${result.status}`);
+    // }
   }
 }
 
 
-
-interface Product {
-  productId: string;
-  productName: string;
-  productDescription: string;
-  productPrice: number;
-  productImage: string;
-}

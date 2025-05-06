@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject, OnInit } from "@angular/core";
-import { LoginStateService, UserService } from "../services/user";
-import { HttpService } from "../services/http-service";
+import { LoginStateService, UserDataService } from "../services/data.service/user-data.service";
+import { HttpService } from "../services/http.service";
 import { Router } from '@angular/router';
 
 @Component({

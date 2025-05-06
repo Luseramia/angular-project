@@ -4,11 +4,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpService } from '../services/http-service';
+import { HttpService } from '../services/http.service';
 import { FormControl,   FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
-import { ProductTypeService } from '../services/product-type';
-import {ProductType} from '../interfaces/interface'
+import { ProductTypeDataService } from '../services/data.service/product-type-data.service';
+import {Product, ProductType} from '../interfaces/interface'
+import { ProductService } from '../services/product.service';
 @Component({
   selector: 'add-product',
   standalone: true,
@@ -33,11 +34,11 @@ export class AddProduct implements OnInit {
   file!: File;
   productTypes!:Array<ProductType>|null
   public objectUrl!: string;
-  private httpService = inject(HttpService);
-  private productTypeService = inject(ProductTypeService);
+  private productTypeDataService = inject(ProductTypeDataService);
+  private productService = inject(ProductService)
 
   async ngOnInit(): Promise<void> {
-    this.productTypes = this.productTypeService.getProductType()
+    this.productTypes = this.productTypeDataService.getProductType()
     // const result = await this.httpService.GetData<Array<ProductType>>('/productType');
     // if('body' in result){
     //   this.productTypes = result.body
@@ -88,9 +89,7 @@ export class AddProduct implements OnInit {
         "typeId":this.productTypeId,
         "tag":this.tag.value
       };
-      console.log(dataTosent);
-      
-      const result = await this.httpService.PostData("/products",dataTosent);
+      this.productService.InsertProduct(dataTosent)
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserData } from '../interfaces/interface';
+import { UserData } from '../../interfaces/interface';
 import { BehaviorSubject, Observable } from 'rxjs';
 // @Injectable({
 //     providedIn: 'root',
@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root',
    })
-export class UserService{
+export class UserDataService{
   private userData = new BehaviorSubject<UserData>({userId:"",username:"",role:"",name:""}) || undefined;
     // private userData!:UserData;
     setUserData(userData:UserData){
