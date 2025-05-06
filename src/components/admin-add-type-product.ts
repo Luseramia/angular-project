@@ -10,7 +10,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { HttpService } from '../services/http-service';
+import { HttpService } from '../services/http.service';
+import { ProductTypeService } from '../services/product-type.service';
 @Component({
   selector: 'add-type-product',
   standalone: true,
@@ -26,16 +27,15 @@ import { HttpService } from '../services/http-service';
   templateUrl: '../components-html/add-type-product.html',
 })
 export class AddTypeProduct {
+  private productTypeService = inject(ProductTypeService)
   typeProductName = new FormControl('', [Validators.required]);
-    private httpService = inject(HttpService);
     async Submit() {
     if(this.typeProductName.value){
-      const result = await this.httpService.PostData('/productType/insertProductType',{typeName:this.typeProductName.value});
-      if(result.status==200){
-        console.log("success");
-        
-      }
+      this.productTypeService.InsertProductType({typeName:this.typeProductName.value}).subscribe(res=>{
+        if(res.status==200){
+          console.log("success");
+        }
+      })
     }
-  
   }
 }

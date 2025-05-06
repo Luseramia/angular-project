@@ -11,12 +11,12 @@ import {
     HttpErrorResponse
   } from '@angular/common/http';
 import { AppComponent } from '../app/app.component';
-import {LoginStateService, UserService} from "../services/user"
+import {LoginStateService, UserDataService} from "../services/data.service/user-data.service"
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router,private loginStateService: LoginStateService,private userService: UserService) {}
+  constructor(private authService: AuthService, private router: Router,private loginStateService: LoginStateService,private userDataService: UserDataService) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,

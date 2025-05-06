@@ -13,7 +13,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { HttpService } from '../services/http-service';
+import { HttpService } from '../services/http.service';
 import {
   RouterOutlet,
   RouterLink,
@@ -23,10 +23,12 @@ import {
 } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { Loading } from './loading';
-import { LoginStateService, UserService } from '../services/user';
-import { UserData } from '../interfaces/interface';
+import { LoginStateService, UserDataService } from '../services/data.service/user-data.service';
+import { CartItem, UserData } from '../interfaces/interface';
 import { AuthService } from '../router-gaurd/auth.service';
 import { response } from 'express';
+import { CartDataService } from '../services/data.service/cart-data.service';
+import { CartService } from '../services/cart.service';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -62,7 +64,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class Login {
   @Output() loginSuccess = new EventEmitter<void>();
   private loginStateService = inject(LoginStateService);
-  private userService = inject(UserService);
+  private userDataService = inject(UserDataService);
   private authService = inject(AuthService);
   hide = signal(true);
   loading = false;
@@ -74,7 +76,7 @@ export class Login {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  constructor(private router: Router,private cdr: ChangeDetectorRef,private route: ActivatedRoute) {
+  constructor(private router: Router,private route: ActivatedRoute,private cartService:CartService,private cartDataService:CartDataService) {
     // รับ returnUrl จาก query params (ถ้ามี)
     this.route.queryParams.subscribe(params => {
       this.returnUrl = params['returnUrl'] || '';
@@ -101,7 +103,12 @@ export class Login {
     this.authService.login(this.usernameControl.value!, this.passwordControl.value!).subscribe({
       next: (response) => {
         localStorage.setItem('userRole', JSON.stringify(response.body.role));
-        this.userService.setUserData(response.body);
+        this.userDataService.setUserData(response.body);
+        this.cartService.GetItemInCart().subscribe(res=>{
+          if("body" in res && res.body){
+            this.cartDataService.setCartItem(res.body)
+          }
+        })
         this.loginSuccess.emit();
         this.router.navigateByUrl(this.returnUrl);
       },

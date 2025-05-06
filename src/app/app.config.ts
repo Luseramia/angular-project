@@ -7,7 +7,7 @@ import { provideHttpClient, withFetch, withInterceptors, HttpHandlerFn, HttpRequ
 import { catchError, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginStateService } from '../services/user';
+import { LoginStateService } from '../services/data.service/user-data.service';
 
 
 const authInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {

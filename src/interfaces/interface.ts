@@ -11,7 +11,7 @@ export interface Product{
   productName: string;
   productPrice: number;
   productDescription: string;
-  productImage: string | SafeResourceUrl;
+  productImage: SafeResourceUrl | null;
   tag:string;
   typeId:string;
   imageId:string;
@@ -22,4 +22,9 @@ export interface Product{
 export interface  ProductType{
   typeId:string;
   typeName:string;
+}
+
+export interface CartItem{
+  productId:string
+  quantity:number
 }
