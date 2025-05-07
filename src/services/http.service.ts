@@ -13,7 +13,7 @@ export class HttpService {
   constructor(private http: HttpClient) {}
    PostData<T>(endpoint: string, data: Object): Observable<HttpResponse<T>>{
     try{
-    const result = this.http.post<T>(`http://localhost:5192${endpoint}`, data, {
+    const result = this.http.post<T>(`dotnet-app.web-backend.svc.cluster.local:80${endpoint}`, data, {
       withCredentials: true,
       observe: 'response',
       responseType: 'json',
@@ -27,7 +27,7 @@ export class HttpService {
   }
   GetData<T>(endpoint: string): Observable<HttpResponse<T>>{
     try{
-    const result = this.http.get<T>(`http://localhost:5192${endpoint}`, {
+    const result = this.http.get<T>(`dotnet-app.web-backend.svc.cluster.local:80${endpoint}`, {
       withCredentials: true,
       observe: 'response',
       responseType: 'json',
